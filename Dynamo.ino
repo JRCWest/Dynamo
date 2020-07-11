@@ -13,11 +13,13 @@ enum gameStates {READY, PLAY, DEATH};
 int gameState = PLAY;
 
 byte currentHue = 0;
+bool skipToReady = false;
 
 void setup() {
   randomize();
   newColor();
   heartbeatTimer.set(HEARTBEAT_INTERVAL);
+  skipToReady = true;
 }
 
 void loop() {
@@ -59,8 +61,16 @@ void playLoop() {
   }
 
   if (heartbeatTimer.isExpired()) {
-    gameState = DEATH;
-    deathTimer.set(DEATH_INTERVAL);
+    if (skipToReady)
+    {
+	  gameState = READY;
+	  skipToReady = false;
+    }
+	else
+	{
+      gameState = DEATH;
+      deathTimer.set(DEATH_INTERVAL);
+	}
   }
 }
 
@@ -120,14 +130,18 @@ void playDisplay() {
 
 void deathDisplay() {
 
+  byte deathProgress = map(deathTimer.getRemaining(), 0, DEATH_INTERVAL, 0, 255);
+  byte currentBrightness = max(deathProgress, random(50));
+
   FOREACH_FACE(f) {
-    byte deathProgress = map(deathTimer.getRemaining(), 0, DEATH_INTERVAL, 0, 255);
-    byte currentBrightness = max(deathProgress, random(50));
+    //byte deathProgress = map(deathTimer.getRemaining(), 0, DEATH_INTERVAL, 0, 255);
+    //byte currentBrightness = max(deathProgress, random(50));
 
     if (f > 0) { //regular faces
       setColorOnFace(makeColorHSB(currentHue, 255, currentBrightness), f);
     } else {//face 0
-      byte filamentBrightness = max(currentBrightness, 100);
+      //byte filamentBrightness = max(currentBrightness, 100);
+	  byte filamentBrightness = 100;
       setColorOnFace(makeColorHSB(currentHue, 255, filamentBrightness), f);
     }
 
