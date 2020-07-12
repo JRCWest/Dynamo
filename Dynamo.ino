@@ -13,6 +13,10 @@ enum gameStates {READY, PLAY, DEATH};
 int gameState = PLAY;
 
 byte currentHue = 0;
+
+// Added variables by JWEST
+byte prevHue = 0;
+//byte secondaryHue = 0;
 bool skipToReady = false;
 
 void setup() {
@@ -82,7 +86,8 @@ void deathLoop() {
 
 #define READY_PULSE_INTERVAL 1000
 #define READY_PULSE_FRAMES 10
-#define PULSE_BRIGHTNESS 100
+// #define PULSE_BRIGHTNESS 100
+#define PULSE_BRIGHTNESS 75
 
 void readyDisplay() {
   byte currentFrame = (millis() % READY_PULSE_INTERVAL) / (READY_PULSE_INTERVAL / READY_PULSE_FRAMES);
@@ -92,11 +97,14 @@ void readyDisplay() {
   //setColor(dim(WHITE, frameProgress));
   FOREACH_FACE(f) {
     if (currentFrame == (f - 1) ) {
-      setColorOnFace(makeColorHSB(currentHue, 110, frameProgress), f);
+		setColorOnFace(makeColorHSB(currentHue, 255, frameProgress), f);
+      //setColorOnFace(makeColorHSB(currentHue, 110, frameProgress), f);
     } else if (currentFrame == f) {
-      setColorOnFace(makeColorHSB(currentHue, 110, PULSE_BRIGHTNESS), f);
+      setColorOnFace(makeColorHSB(currentHue, 255, PULSE_BRIGHTNESS), f);
+	  //setColorOnFace(makeColorHSB(currentHue, 110, PULSE_BRIGHTNESS), f);
     } else if (currentFrame == (f + 1)) {
-      setColorOnFace(makeColorHSB(currentHue, 110, PULSE_BRIGHTNESS - frameProgress), f);
+      setColorOnFace(makeColorHSB(currentHue, 255, PULSE_BRIGHTNESS - frameProgress), f);
+	  //setColorOnFace(makeColorHSB(currentHue, 110, PULSE_BRIGHTNESS - frameProgress), f);
     }
   }
 
@@ -105,6 +113,13 @@ void readyDisplay() {
 
 void newColor() {
   currentHue = random(50) * 5;
+  
+  // Create Analogous color for ready cycle?
+  //secondaryHue = map(currentHue, 0, 255, 0, 360) + 30;
+  
+  // Retry randomization
+  //if (currentHue == prevHue) { newColor(); }
+  //else { prevHue = currentHue; }
 }
 
 void playDisplay() {
@@ -140,8 +155,8 @@ void deathDisplay() {
     if (f > 0) { //regular faces
       setColorOnFace(makeColorHSB(currentHue, 255, currentBrightness), f);
     } else {//face 0
-      //byte filamentBrightness = max(currentBrightness, 100);
-	  byte filamentBrightness = 100;
+      byte filamentBrightness = max(currentBrightness, 100);
+	  //byte filamentBrightness = 100;
       setColorOnFace(makeColorHSB(currentHue, 255, filamentBrightness), f);
     }
 
