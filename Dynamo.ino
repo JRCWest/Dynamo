@@ -145,17 +145,15 @@ void playDisplay() {
 
 void deathDisplay() {
 
-  byte deathProgress = map(deathTimer.getRemaining(), 0, DEATH_INTERVAL, 0, 255);
-  byte currentBrightness = max(deathProgress, random(50));
-
   FOREACH_FACE(f) {
-    //byte deathProgress = map(deathTimer.getRemaining(), 0, DEATH_INTERVAL, 0, 255);
-    //byte currentBrightness = max(deathProgress, random(50));
+    byte deathProgress = map(deathTimer.getRemaining(), 0, DEATH_INTERVAL, 0, 255);
+    byte currentBrightness = max(deathProgress, random(50));
 
     if (f > 0) { //regular faces
       setColorOnFace(makeColorHSB(currentHue, 255, currentBrightness), f);
     } else {//face 0
-      byte filamentBrightness = max(currentBrightness, 100);
+      byte filamentBrightness = max(currentBrightness, 125);
+	  //byte filamentBrightness = max(currentBrightness, 100);
 	  //byte filamentBrightness = 100;
       setColorOnFace(makeColorHSB(currentHue, 255, filamentBrightness), f);
     }
