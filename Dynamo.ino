@@ -49,11 +49,7 @@ void loop() {
 }
 
 void readyLoop() {
-  if (buttonDoubleClicked()) {
-    newColor();
-  }
-
-  if (buttonSingleClicked()) {
+  if (buttonPressed()) {
     heartbeatTimer.set(HEARTBEAT_INTERVAL);
     gameState = PLAY;
   }
@@ -79,7 +75,10 @@ void playLoop() {
 }
 
 void deathLoop() {
-  if (buttonDoubleClicked()) {
+  if (buttonDoubleClicked()) {      
+    newColor();  
+  }
+  if (buttonLongPressed()) {
     gameState = READY;
   }
 }
